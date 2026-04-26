@@ -49,6 +49,7 @@ This introduces daemon vs non-daemon process behavior:
 - Creates `background_process` with `daemon = True`.
 - Creates `NO_background_process` with `daemon = False`.
 - Starts both without explicit joins.
+- The main program exits immediately after starting, which causes the daemon process to be killed, while the non-daemon process continues until completion.
 
 My learning: daemon processes are background helpers that may stop when the main program exits, so they are not suitable for critical work that must always complete.
 
@@ -74,6 +75,13 @@ This demonstrates high-level parallel mapping with a process pool:
 - Creates `Pool(processes=4)`.
 - Uses `pool.map(function_square, inputs)` to parallelize work.
 - Closes and joins the pool after completion.
+- Note: the `close()` method prevents new tasks from being submitted, and `join()` waits for all worker processes to 
+  finish. You cannot use `join()` without first calling `close()`, as it will raise a `ValueError` because the pool is still accepting tasks.
+- better to use a context manager like this:
+``` python
+with multiprocessing.Pool(processes=4) as pool:
+    pool_outputs = pool.map(function_square, inputs)
+```
 
 My takeaway: `Pool.map` is a concise and scalable pattern for applying one function over many inputs.
 
@@ -83,6 +91,9 @@ This file demonstrates forceful process termination:
 - Starts a long-running worker.
 - Calls `terminate()` before normal completion.
 - Shows process state with `is_alive()` and prints `exitcode`.
+- After calling `terminate()`, the process is still alive because the operation is asynchronous, but it will be killed soon after.
+- Once we wait by `join()` the `isAlive()` method returns false.
+- The `foo()` fn never prints anything as it never gets scheduled, adding a delay can help.
 
 Learning point: `terminate()` is useful for control/recovery, but it can interrupt work abruptly, so graceful shutdown is usually safer when possible.
 
@@ -110,6 +121,7 @@ This demonstrates `multiprocessing.Pipe` for direct process-to-process communica
 - First process sends values `0..9` into a pipe.
 - Second process reads those values, squares them, and sends to a second pipe.
 - Main process receives and prints transformed results until EOF.
+- Closing the sending end of the pipe is crucial to signal the receiver that no more data is coming (`EOFError`).
 
 My conclusion: `Pipe` is a lightweight IPC option for point-to-point communication, while `Queue` is often easier for multi-producer/multi-consumer patterns.
 

@@ -17,17 +17,15 @@ def foo():
 
 if __name__ == '__main__':
     background_process = multiprocessing.Process\
-                         (name='background_process',\
+                         (name='background_process',
                           target=foo)
     background_process.daemon = True
 
     NO_background_process = multiprocessing.Process\
-                            (name='NO_background_process',\
+                            (name='NO_background_process',
                              target=foo)
     
-    NO_background_process.daemon = False
+    NO_background_process.daemon = False # default
     
     background_process.start()
     NO_background_process.start()
-    
-

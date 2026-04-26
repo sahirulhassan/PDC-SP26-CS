@@ -9,7 +9,7 @@ def myFunc():
 
 if __name__ == '__main__':
     process_with_name = multiprocessing.Process\
-                        (name='myFunc process',\
+                        (name='myFunc process',
                          target=myFunc)
 
     #process_with_name.daemon = True
@@ -22,4 +22,3 @@ if __name__ == '__main__':
 
     process_with_name.join()
     process_with_default_name.join()
-    

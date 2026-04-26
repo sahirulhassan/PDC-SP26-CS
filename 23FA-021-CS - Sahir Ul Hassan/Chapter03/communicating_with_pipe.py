@@ -42,7 +42,6 @@ if __name__== '__main__':
 
     try:
         while True:
-            
             print (pipe_2[1].recv())
     except EOFError:
         print ("End")

@@ -12,4 +12,3 @@ if __name__ == '__main__':
         process = multiprocessing.Process(target=myFunc, args=(i,))
         process.start()
         process.join()
-

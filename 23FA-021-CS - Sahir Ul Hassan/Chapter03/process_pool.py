@@ -11,6 +11,6 @@ if __name__ == '__main__':
     pool = multiprocessing.Pool(processes=4)
     pool_outputs = pool.map(function_square, inputs)
 
-    pool.close() 
-    pool.join()  
+    pool.close()
+    pool.join()
     print ('Pool    :', pool_outputs)

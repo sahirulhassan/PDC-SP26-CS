@@ -29,5 +29,3 @@ if __name__ == '__main__':
     
     background_process.start()
     NO_background_process.start()
-    
-
